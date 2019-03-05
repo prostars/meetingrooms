@@ -57,7 +57,7 @@ func (h RedisHandler) CanBooking(r protocol.ReqBooking) error {
 }
 
 func (h RedisHandler) AddBooking(r protocol.ReqBooking) error {
-	if r.RepeatCount < 1 {
+	if !util.IsValidRepeatCount(r.RepeatCount) {
 		return errors.New("invalid repeatCount")
 	}
 

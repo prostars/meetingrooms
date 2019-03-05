@@ -10,8 +10,17 @@ var storage *RedisHandler
 
 func TestMain(m *testing.M) {
 	storage = CreateRedisHandler()
+	clearTestData()
 	m.Run()
+	clearTestData()
 	storage.Close()
+}
+
+func clearTestData() {
+	storage.conn.Do("SREM", "meetingRooms", "testRoomA")
+	storage.conn.Do("SREM", "meetingRooms", "testRoomB")
+	storage.conn.Do("DEL", makeBookingInfoKey("testRoomA", "20190304"))
+	storage.conn.Do("DEL", makeBookingTimesKey("testRoomA", "20190304"))
 }
 
 func TestAddMeetingRoom(t *testing.T) {
@@ -19,7 +28,6 @@ func TestAddMeetingRoom(t *testing.T) {
 	_, err := storage.conn.Do("SREM", "meetingRooms", "testRoomA")
 	assert.Equal(t, err, nil)
 	_, err = storage.conn.Do("SREM", "meetingRooms", "testRoomB")
-	storage.conn.Do("SREM", "meetingRooms", "testRoomB")
 	assert.Equal(t, storage.AddMeetingRoom("testRoomA"), nil)
 	assert.Equal(t, storage.AddMeetingRoom("testRoomB"), nil)
 	rooms, err := storage.GetMeetingRooms()

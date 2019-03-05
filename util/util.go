@@ -59,3 +59,41 @@ func GetNextWeekDate(date string) string {
 	afterWeek := dateStamp.Add(sevenDays)
 	return afterWeek.Format("20060102")
 }
+
+func IsValidDate(date string) bool {
+	if len(date) != 8 {
+		return false
+	}
+	const layOut = "20060102"
+	if d, err := time.Parse(layOut, date); err == nil {
+		if int(time.Now().Sub(d).Hours() / 24) <= 0 {
+			return true
+		}
+	}
+	return false
+}
+
+func IsValidTime(time string) bool {
+	if len(time) != 4 {
+		return false
+	}
+	value, err := strconv.Atoi(time)
+	if err != nil {
+		return false
+	}
+	if 2330 < value || value < 800 {
+		return false
+	}
+	v := value % 100
+	if v == 0 || v == 30 {
+		return true
+	}
+	return false
+}
+
+func IsValidRepeatCount(count int) bool {
+	if 10 < count || count < 1 {
+		return false
+	}
+	return true
+}

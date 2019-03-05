@@ -3,6 +3,7 @@ package util
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
+	"time"
 )
 
 func TestBuildBookingTimes(t *testing.T) {
@@ -21,3 +22,27 @@ func TestGetNextWeekDate(t *testing.T) {
 	assert.Equal(t, nextWeek, "20190311")
 }
 
+func TestIsValidRepeatCount(t *testing.T) {
+	assert.Equal(t, IsValidRepeatCount(10), true)
+	assert.Equal(t, IsValidRepeatCount(-10), false)
+	assert.Equal(t, IsValidRepeatCount(-0), false)
+}
+
+func TestIsValidTime(t *testing.T) {
+	assert.Equal(t, IsValidTime("0800"), true)
+	assert.Equal(t, IsValidTime("2330"), true)
+	assert.Equal(t, IsValidTime("0730"), false)
+	assert.Equal(t, IsValidTime("1210"), false)
+	assert.Equal(t, IsValidTime("2340"), false)
+	assert.Equal(t, IsValidTime("2390"), false)
+	assert.Equal(t, IsValidTime("2400"), false)
+}
+
+func TestIsValidDate(t *testing.T) {
+	const layOut = "20060102"
+	now := time.Now().Format(layOut)
+	oldDate, _ := time.Parse(layOut, "20101205")
+	assert.Equal(t, IsValidDate(now), true)
+	assert.Equal(t, IsValidDate(GetNextWeekDate(now)), true)
+	assert.Equal(t, IsValidDate(oldDate.Format(layOut)), false)
+}

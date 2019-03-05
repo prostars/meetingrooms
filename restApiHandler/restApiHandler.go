@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	PathPreFixForBookingList = "/meetingrooms/bookingList/"
+	PathPreFixForBookingList = "/meetingrooms/bookinglist/"
 	PathForBooking = "/meetingrooms/booking"
 )
 
@@ -28,7 +28,7 @@ func (h HttpHandler) BookingListHandler(w http.ResponseWriter, req *http.Request
 	fmt.Println("called BookingListHandler")
 
 	date := req.URL.Path[len(PathPreFixForBookingList):]
-	if len(date) != 8 {
+	if !util.IsValidDate(date) {
 		sendError(w, 400, "invalid date param")
 		return
 	}
@@ -47,6 +47,14 @@ func (h HttpHandler) BookingHandler(w http.ResponseWriter, req *http.Request) {
 	reqBooking := protocol.ReqBooking{}
 	err := json.NewDecoder(req.Body).Decode(&reqBooking)
 	if err != nil {
+		sendError(w, 400, "invalid request")
+		return
+	}
+
+	if !util.IsValidDate(reqBooking.Date) ||
+		!util.IsValidTime(reqBooking.StartTime) ||
+		!util.IsValidTime(reqBooking.EndTime) ||
+		!util.IsValidRepeatCount(reqBooking.RepeatCount) {
 		sendError(w, 400, "invalid request")
 		return
 	}
