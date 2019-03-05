@@ -119,9 +119,9 @@ function buildTableForMeetingRooms(data) {
     let dataRow = '<tr>';
     const roomCount = Object.keys(jsonData['MeetingRooms']).length;
     for (let i = 0; i < roomCount; i++) {
-        const roomName = jsonData['MeetingRooms'][i]['Name'].replace(/\s/g, "");
+        const roomName = jsonData['MeetingRooms'][i]['Name'];
         titleRow += '<td>' + roomName + '</td>';
-        dataRow += '<td><div id="' + roomName + '"></div></td>';
+        dataRow += '<td><div id="' + roomName.replace(/\s/g, "") + '"></div></td>';
     }
     titleRow += '</tr>';
     const meetingRooms = $('#meetingRooms');
@@ -134,13 +134,16 @@ function buildTableForMeetingRooms(data) {
         if (jsonData['MeetingRooms'][i]['StartTimes'] == null)
             continue;
         const startTimes = Object.keys(jsonData['MeetingRooms'][i]['StartTimes']).length;
+        let bookingList = '';
         for (let j = 0; j < startTimes; j++) {
             const startTime = jsonData['MeetingRooms'][i]['StartTimes'][j]['StartTime'];
             const userName = jsonData['MeetingRooms'][i]['StartTimes'][j]['UserName'];
             console.log(roomName);
             console.log(startTime + ':' + userName);
-            $(roomName).html(startTime + ':' + userName);
+            const hourAndMinute = [startTime.slice(0, 2), ':', startTime.slice(2)].join('');
+            bookingList = bookingList + hourAndMinute+ ' - ' + userName + '<br>';
         }
+        $(roomName).html(bookingList);
     }
 
 }
