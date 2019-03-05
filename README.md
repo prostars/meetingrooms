@@ -126,3 +126,5 @@
        ]
     }
     ```    
+# Use chrome browser
+1. input url 'localhost:30001' on your chrome browser    
