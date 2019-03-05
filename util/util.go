@@ -60,13 +60,15 @@ func GetNextWeekDate(date string) string {
 	return afterWeek.Format("20060102")
 }
 
-func IsValidDate(date string) bool {
+func IsValidDate(date string, allowPast bool) bool {
 	if len(date) != 8 {
 		return false
 	}
 	const layOut = "20060102"
 	if d, err := time.Parse(layOut, date); err == nil {
-		if int(time.Now().Sub(d).Hours() / 24) <= 0 {
+		if allowPast {
+			return true
+		} else if int(time.Now().Sub(d).Hours() / 24) <= 0 {
 			return true
 		}
 	}

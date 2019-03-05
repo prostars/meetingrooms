@@ -27,8 +27,10 @@ func CreateHttpHandler(storage *redisHandler.RedisHandler) HttpHandler {
 func (h HttpHandler) BookingListHandler(w http.ResponseWriter, req *http.Request) {
 	fmt.Println("called BookingListHandler")
 
+	//enableCors(&w)	// for local test
+
 	date := req.URL.Path[len(PathPreFixForBookingList):]
-	if !util.IsValidDate(date) {
+	if !util.IsValidDate(date, true) {
 		sendError(w, 400, "invalid date param")
 		return
 	}
@@ -44,6 +46,13 @@ func (h HttpHandler) BookingListHandler(w http.ResponseWriter, req *http.Request
 func (h HttpHandler) BookingHandler(w http.ResponseWriter, req *http.Request) {
 	fmt.Println("called BookingHandler")
 
+	// begin : for local test
+	//setupResponse(&w, req)
+	//if (*req).Method == "OPTIONS" {
+	//	return
+	//}
+	// end : for local test
+
 	reqBooking := protocol.ReqBooking{}
 	err := json.NewDecoder(req.Body).Decode(&reqBooking)
 	if err != nil {
@@ -51,7 +60,7 @@ func (h HttpHandler) BookingHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if !util.IsValidDate(reqBooking.Date) ||
+	if !util.IsValidDate(reqBooking.Date, false) ||
 		!util.IsValidTime(reqBooking.StartTime) ||
 		!util.IsValidTime(reqBooking.EndTime) ||
 		!util.IsValidRepeatCount(reqBooking.RepeatCount) {
@@ -122,3 +131,13 @@ func sendError(w http.ResponseWriter, code int, message string) {
 	w.WriteHeader(code)
 	fmt.Fprintln(w, message)
 }
+
+//func enableCors(w *http.ResponseWriter) {
+//	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+//}
+//
+//func setupResponse(w *http.ResponseWriter, req *http.Request) {
+//	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+//	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+//	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+//}

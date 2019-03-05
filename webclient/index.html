@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Meeting Rooms</title>
+</head>
+<body>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+
+    <label for="selectedDate">Selected date:</label>
+    <input type="date" id="selectedDate">
+    <hr>
+    <br>
+    <label for="bookingDate">booking date:</label>
+    <input type="date" id="bookingDate">
+    <br>
+    <label for="selectedMeetingRoom">meeting room:</label>
+    <select id="selectedMeetingRoom"></select>
+    <br>
+    <label>start time:</label>
+    <select id="startTimeHour"></select>
+    <select id="startTimeMinute"></select>
+    <br>
+    <label for="durationTime">duration:</label>
+    <select id="durationTime"></select>
+    <br>
+    <label for="repeatCount">weekly repeat count:</label>
+    <select id="repeatCount"></select>
+    <br>
+    <label for="userName">user name:</label>
+    <input type="text" id="userName">
+    <br>
+    <table id="meetingRooms" border=1></table>
+    <br>
+    <button id="booking">Booking</button>
+    <br>
+
+    <div id="printArea"></div>
+
+    <script>
+        $(document).ready(function() {
+            prepareDatePicker();
+            prepareTimeSelector();
+            requestBookingList(getDateString($('#selectedDate')));
+        });
+        $('#selectedDate').change(function () {
+            requestBookingList(getDateString($('#selectedDate')));
+        });
+        $('#booking').click(requestBooking);
+    </script>
+</body>
+</html>
