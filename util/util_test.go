@@ -39,11 +39,15 @@ func TestIsValidTime(t *testing.T) {
 }
 
 func TestIsValidDate(t *testing.T) {
-	const layOut = "20060102"
-	now := time.Now().Format(layOut)
-	oldDate, _ := time.Parse(layOut, "20101205")
-	assert.Equal(t, IsValidDate(now, false), true)
-	assert.Equal(t, IsValidDate(GetNextWeekDate(now), false), true)
-	assert.Equal(t, IsValidDate(oldDate.Format(layOut), false), false)
-	assert.Equal(t, IsValidDate(oldDate.Format(layOut), true), true)
+	now := time.Now().Format(dateLayout)
+	oldDate, _ := time.Parse(dateLayout, "20101205")
+	assert.Equal(t, IsValidDate(GetNextWeekDate(now), "0000", false), true)
+	assert.Equal(t, IsValidDate(oldDate.Format(dateLayout), "0000", false), false)
+	assert.Equal(t, IsValidDate(oldDate.Format(dateLayout), "0000", true), true)
+}
+
+func TestIsPast(t *testing.T) {
+	assert.Equal(t, IsValidDate("20191229", "1010", false), true)
+	assert.Equal(t, IsValidDate("20111229", "1020", false), false)
+	assert.Equal(t, IsValidDate("20111229", "1020", true), true)
 }

@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+const dateLayout = "20060102"
+
 func BuildBookingTimes(startTime string, endTime string) []string {
 	start := 0
 	end := 0
@@ -49,10 +51,9 @@ func SplitStartTimeAndUserName(value string) (string, string) {
 }
 
 func GetNextWeekDate(date string) string {
-	const layOut = "20060102"
 	const sevenDays = time.Hour * 24 * 7
 
-	dateStamp, err := time.Parse(layOut, date)
+	dateStamp, err := time.Parse(dateLayout, date)
 	if err != nil {
 		return ""
 	}
@@ -60,15 +61,13 @@ func GetNextWeekDate(date string) string {
 	return afterWeek.Format("20060102")
 }
 
-func IsValidDate(date string, allowPast bool) bool {
-	if len(date) != 8 {
-		return false
-	}
-	const layOut = "20060102"
-	if d, err := time.Parse(layOut, date); err == nil {
+func IsValidDate(date string, startTime string, allowPast bool) bool {
+	const datetimeLayout = "200601021504"
+	if d, err := time.Parse(datetimeLayout, date + startTime); err == nil {
 		if allowPast {
 			return true
-		} else if int(time.Now().Sub(d).Hours() / 24) <= 0 {
+		}
+		if time.Now().Sub(d) < 0 {
 			return true
 		}
 	}

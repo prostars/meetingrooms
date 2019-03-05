@@ -46,7 +46,7 @@ func startServer() {
 	fmt.Println(storage.GetMeetingRooms())
 
 	apiHandler := restApiHandler.CreateHttpHandler(storage)
-
+	http.Handle("/", http.FileServer(http.Dir("./webclient")))
 	http.HandleFunc(restApiHandler.PathPreFixForBookingList, apiHandler.BookingListHandler)
 	http.HandleFunc(restApiHandler.PathForBooking, apiHandler.BookingHandler)
 

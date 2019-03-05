@@ -45,9 +45,6 @@ function requestBookingList(date) {
     $.get(reqUrl, function(data, status) {
         console.log('received response.' + status);
         console.log(data);
-
-        $('#printArea').html(data);
-
         buildSelectBoxForMeetingRooms(data);
         buildTableForMeetingRooms(data);
     });
@@ -67,7 +64,7 @@ function requestBooking() {
     bookingInfo.Date = getDateString($('#bookingDate'));
     bookingInfo.StartTime = startTime;
     bookingInfo.EndTime = pad(endTime, 4);
-    bookingInfo.RepeatCount = $('#repeatCount').val();
+    bookingInfo.RepeatCount = Number($('#repeatCount').val());
     bookingInfo.UserName = $('#userName').val();
 
     if (bookingInfo.UserName.length === 0) {
@@ -79,18 +76,20 @@ function requestBooking() {
     console.log(bookingInfo);
     console.log(json);
     $.ajax('http://localhost:30001/meetingrooms/booking', {
-        type: 'POST',
+        type: 'PUT',
         data: json,
         contentType: 'application/json',
-        // headers: {
-        //     "Content-Type": "application/json",
-        //     "X-HTTP-Method-Override": "PUT" },
         success: function(data, textStatus, xhr) {
             console.log('success booking request.');
+            const bookingDate = [bookingInfo.Date.slice(0, 4), bookingInfo.Date.slice(4, 6), bookingInfo.Date.slice(6, 8)].join('-');
+            document.getElementById('selectedDate').valueAsDate = new Date(bookingDate);
             requestBookingList(bookingInfo.Date);
         },
         error: function(xhr, textStatus, errorThrown) {
             console.log('failed booking request.');
+            console.log(xhr);
+            console.log(textStatus);
+            console.log(errorThrown);
             alert('invalid request');
         }
     });
