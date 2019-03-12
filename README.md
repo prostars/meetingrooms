@@ -1,4 +1,4 @@
-# meetingrooms
+# Meeting Rooms (RESTful API example using golang and redis)
 
 # Install
 1. Golang 1.12.x [Download](https://golang.org/dl/)
